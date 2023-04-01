@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const HTTP_PORT = process.env.PORT || 8080;
 
+const userService = require("./user-service");
+
 const dotenv = require("dotenv");
 dotenv.config();
 

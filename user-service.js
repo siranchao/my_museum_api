@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const userSchema = require('./models/userModel');
+const dotenv = require("dotenv");
+dotenv.config();
 
 let mongoDBConnectionString = process.env.MONGO_URL;
 
@@ -35,7 +37,7 @@ module.exports.registerUser = function (userData) {
                 let newUser = new User(userData);
 
                 newUser.save().then(() => {
-                    resolve({ msg: "User successfully registered", id: newUser._id });
+                    resolve({ msg: "User successfully registered", user: newUser });
                 }).catch(err => {
                     if (err.code == 11000) {
                         reject("User Name already taken");

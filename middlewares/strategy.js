@@ -13,7 +13,8 @@ const strategy = new JwtStrategy(jwtOptions, (payload, done) => {
 
     if (payload) {
         done(null, {
-            id: payload.id,
+            _id: payload._id,
+            userName: payload.userName
         })
     }
     else {

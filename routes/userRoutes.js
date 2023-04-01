@@ -10,7 +10,7 @@ router.post("/register", (req, res) => {
         .then((val) => {
             res.json({
                 "message": val.msg,
-                "token": generateToken(val.id)
+                "token": generateToken(val.user._id, val.user.userName)
             });
         }).catch((msg) => {
             res.status(422).json({ "message": msg });
@@ -22,14 +22,14 @@ router.post("/login", (req, res) => {
         .then((user) => {
             res.json({
                 "message": "login successful",
-                "token": generateToken(user._id)
+                "token": generateToken(user._id, user.userName)
             });
         }).catch(msg => {
             res.status(422).json({ "message": msg });
         });
 });
 
-router.get("/favorites", (req, res) => {
+router.get("/favorites", passport.authenticate('jwt', { session: false }), (req, res) => {
     userService.getFavorites(req.user._id)
         .then(data => {
             res.json(data);
@@ -39,7 +39,7 @@ router.get("/favorites", (req, res) => {
 
 });
 
-router.put("/favorites/:id", (req, res) => {
+router.put("/favorites/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
     userService.addFavorite(req.user._id, req.params.id)
         .then(data => {
             res.json(data)
@@ -48,7 +48,7 @@ router.put("/favorites/:id", (req, res) => {
         })
 });
 
-router.delete("/favorites/:id", (req, res) => {
+router.delete("/favorites/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
     userService.removeFavorite(req.user._id, req.params.id)
         .then(data => {
             res.json(data)
@@ -57,7 +57,7 @@ router.delete("/favorites/:id", (req, res) => {
         })
 });
 
-router.get("/history", (req, res) => {
+router.get("/history", passport.authenticate('jwt', { session: false }), (req, res) => {
     userService.getHistory(req.user._id)
         .then(data => {
             res.json(data);
@@ -67,7 +67,7 @@ router.get("/history", (req, res) => {
 
 });
 
-router.put("/history/:id", (req, res) => {
+router.put("/history/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
     userService.addHistory(req.user._id, req.params.id)
         .then(data => {
             res.json(data)
@@ -76,7 +76,7 @@ router.put("/history/:id", (req, res) => {
         })
 });
 
-router.delete("/history/:id", (req, res) => {
+router.delete("/history/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
     userService.removeHistory(req.user._id, req.params.id)
         .then(data => {
             res.json(data)
@@ -87,8 +87,8 @@ router.delete("/history/:id", (req, res) => {
 
 
 //generate JWT token
-const generateToken = (id) => {
-    const payload = { id }
+const generateToken = (userID, userName) => {
+    const payload = { _id: userID, userName: userName };
     return jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: '30d'
     })
