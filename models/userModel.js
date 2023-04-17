@@ -5,11 +5,11 @@ const userSchema = new Schema({
     userName: {
         type: String,
         unique: true,
-        require: true
+        required: true
     },
     password: {
         type: String,
-        require: true
+        required: true
     },
     favorites: [String],
     history: [String]
