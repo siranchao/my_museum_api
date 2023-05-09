@@ -163,3 +163,20 @@ module.exports.removeHistory = function (id, historyId) {
             })
     });
 }
+
+module.exports.removeAllHistory = function (id) {
+    return new Promise((resolve, reject) => {
+        User.findByIdAndUpdate(id,
+            { $set: { history: [] } },
+            { new: true }
+        ).exec()
+            .then(user => {
+                resolve(user.history)
+            })
+            .catch(err => {
+                reject(`Unable to update history for user with id: ${id}`)
+            })
+    })
+}
+
+

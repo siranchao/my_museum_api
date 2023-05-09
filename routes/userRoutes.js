@@ -76,6 +76,15 @@ router.put("/history/:id", passport.authenticate('jwt', { session: false }), (re
         })
 });
 
+router.delete("/history", passport.authenticate('jwt', { session: false }), (req, res) => {
+    userService.removeAllHistory(req.user._id)
+        .then(data => {
+            res.json(data)
+        }).catch(msg => {
+            res.status(422).json({ error: msg });
+        })
+})
+
 router.delete("/history/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
     userService.removeHistory(req.user._id, req.params.id)
         .then(data => {
